@@ -1,0 +1,20 @@
+package global.coda.hms.constant.applicationconstant.apiconstants;
+
+public class DoctorApiContants {
+    public static String ENTERED_DOCTORAPI_CREATE = "ENTERED_DOCTORAPI_CREATE";
+    public static String DOCTOR_CREATED_IN_DOCTARAPI = "DOCTOR_CREATED_IN_DOCTARAPI";
+    public static String SUCCESSFULLY_CREATED = "SUCCESSFULLY_CREATED";
+
+    public static String ENTERED_DOCTORAPI_READ = "ENTERED_DOCTORAPI_READ";
+    public static String DOCTOR_READ_IN_DOCTARAPI = "DOCTOR_READ_IN_DOCTARAPI";
+
+    public static String ENTERED_DOCTORAPI_UPDATE="ENTERED_DOCTORAPI_UPDATE";
+    public static String DOCTOR_UPDATE_IN_DOCTARAPI="DOCTOR_UPDATE_IN_DOCTARAPI";
+    public static String SUCCESSFULLY_UPDATED="SUCCESSFULLY_UPDATED";
+
+    public static String ENTERED_DOCTORAPI_DELETE="ENTERED_DOCTORAPI_DELETE";
+    public static String DOCTOR_DELETE_IN_DOCTARAPI="DOCTOR_DELETE_IN_DOCTARAPI";
+    public static String SUCCESSFULLY_DELETED="SUCCESSFULLY_DELETED";
+
+
+}
