@@ -20,10 +20,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
-import java.util.HashMap;
+
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
+
 import java.util.ResourceBundle;
 
 
@@ -167,17 +167,35 @@ public class DoctorApi {
     /**
      * Gets all patient.
      *
-     * @param dotorId the dotor id
+     * @param userId the dotor id
      * @return the all patient
      * @throws BuisnessException the buisness exception
      */
+
+    @PUT
+    @Path("deletedoctor")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public CustomResponse<String> deletePatient(@FormParam("userId") int userId) throws BuisnessException {
+
+        //Read Service
+        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorApiContants.ENTERED_DOCTORAPI_DELETE) + " userId : " + userId);
+        CustomResponse<String> customResponse = new CustomResponse<>();
+        String message = LOCAL_MESSAGES_BUNDLE.getString(DoctorApiContants.SUCCESSFULLY_DELETED);
+
+        doctorDelegate.deleteDoctorDelegate(userId);
+        customResponse.setSuccess(true);
+        customResponse.setStatus(Response.Status.CREATED.getStatusCode());
+        customResponse.setObject(message);
+        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorApiContants.DOCTOR_DELETE_IN_DOCTARAPI));
+        return customResponse;
+    }
     @POST
     @Path("{id}/getAllPatient")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public CustomResponse<List<Patient>> getAllPatient(@PathParam("id") int dotorId) throws BuisnessException {
 
-        //Delete Service
         LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorApiContants.ENTERED_DOCTORAPI_DELETE) + " userId : " + dotorId);
         CustomResponse<List<Patient>> customResponse = new CustomResponse<>();
         List<Patient> patientList = new ArrayList<>();
