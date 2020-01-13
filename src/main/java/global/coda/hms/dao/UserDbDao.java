@@ -7,7 +7,7 @@ import java.sql.SQLException;
 /**
  * The interface User db dao.
  */
-public interface UserDbDao  {
+public interface UserDbDao {
     /**
      * Gets user.
      *

@@ -121,9 +121,12 @@ public class User {
     private int roleId;
     private int branchId;
 
-
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
-        return "User{" +  "userId=" + userId + ", username='" + username + '\'' + ", email='" + email + '\'' + ", password='" + password + '\'' + ", roleId=" + roleId + ", branchId=" + branchId + '}';
+        return "User{" + "userId=" + userId + ", username='" + username + '\'' + ", email='" + email + '\'' + ", password='" + password + '\'' + ", roleId=" + roleId + ", branchId=" + branchId + '}';
     }
 }

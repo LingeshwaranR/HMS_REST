@@ -9,30 +9,31 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- *@author VC
+ * @author VC
  */
 public class MysqlConnection {
     private Connection connection;
     private static final ResourceBundle LOCAL_MESSAGES_BUNDLE = ResourceBundle.getBundle("messages",
             Locale.getDefault());
-    private static String connectionUrl=LOCAL_MESSAGES_BUNDLE.getString(ConnectionConstant.CONNECTION_URL);
-    private static String username=LOCAL_MESSAGES_BUNDLE.getString(ConnectionConstant.CONNECTION_USERNAME);
-    private static String password=LOCAL_MESSAGES_BUNDLE.getString(ConnectionConstant.CONNECTION_PASSWORD);
-
+    private static String connectionUrl = LOCAL_MESSAGES_BUNDLE.getString(ConnectionConstant.CONNECTION_URL);
+    private static String username = LOCAL_MESSAGES_BUNDLE.getString(ConnectionConstant.CONNECTION_USERNAME);
+    private static String password = LOCAL_MESSAGES_BUNDLE.getString(ConnectionConstant.CONNECTION_PASSWORD);
 
 
     /**
      * handles the DB Connection.
+     *
      * @throws SQLException handles the SQL exception.
      */
     public MysqlConnection() throws SQLException {
 
-        connection =  DriverManager.getConnection(connectionUrl,username,password);
+        connection = DriverManager.getConnection(connectionUrl, username, password);
 
     }
 
     /**
      * Get Connection.
+     *
      * @return gives the connection.
      */
     public Connection getConnection() {
@@ -41,6 +42,7 @@ public class MysqlConnection {
 
     /**
      * CLose the Connection.
+     *
      * @throws SQLException handles the Sql Exception.
      */
     public void closeConnection() throws SQLException {

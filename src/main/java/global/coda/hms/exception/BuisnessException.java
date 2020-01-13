@@ -1,6 +1,5 @@
 package global.coda.hms.exception;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 
 /**
  * The type Buisness exception.
@@ -8,7 +7,8 @@ import java.sql.SQLIntegrityConstraintViolationException;
 public class BuisnessException extends Exception {
     /**
      * Instantiates a new Buisness exception.
-     * @param e
+     *
+     * @param e the e
      */
     public BuisnessException(Exception e) {
         super(e);

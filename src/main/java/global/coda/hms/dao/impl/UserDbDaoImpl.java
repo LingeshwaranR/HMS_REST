@@ -1,7 +1,6 @@
 package global.coda.hms.dao.impl;
 
 
-
 import global.coda.hms.config.MysqlConnection;
 import global.coda.hms.dao.UserDbDao;
 import global.coda.hms.model.User;
@@ -15,6 +14,12 @@ import java.sql.SQLException;
  * The type User db dao.
  */
 public class UserDbDaoImpl implements UserDbDao {
+    /**
+     *
+     * @param email the email
+     * @return
+     * @throws SQLException
+     */
     @Override
     public User getUser(String email) throws SQLException {
         User user = new User();

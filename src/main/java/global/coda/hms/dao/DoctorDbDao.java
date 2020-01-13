@@ -55,9 +55,11 @@ public interface DoctorDbDao {
     /**
      * Delete boolean.
      *
-     * @param doctor the doctor
+     * @param userId the doctor
      * @return the boolean
      * @throws SQLException the sql exception
      */
      Boolean delete(int userId) throws SQLException;
+
+     List<Integer > readAllDoctorId() throws SQLException;
 }

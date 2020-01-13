@@ -2,6 +2,7 @@ package global.coda.hms.dao;
 
 import global.coda.hms.model.Patient;
 import global.coda.hms.model.User;
+
 import java.sql.SQLException;
 import java.util.List;
 
@@ -21,8 +22,7 @@ public interface PatientDbDao {
     /**
      * Read user.
      *
-     * @param id      the id
-     * @param patient the patient
+     * @param userId the user id
      * @return the user
      * @throws SQLException the sql exception
      */
@@ -48,8 +48,7 @@ public interface PatientDbDao {
     /**
      * Delete boolean.
      *
-     * @param id      the id
-     * @param patient the patient
+     * @param userId the user id
      * @return the boolean
      * @throws SQLException the sql exception
      */
@@ -62,5 +61,15 @@ public interface PatientDbDao {
      * @throws SQLException the sql exception
      */
     List<Patient> readAllWithMaskedDetails() throws SQLException;
+
+    /**
+     * Gets all patient id mapped under a doctor.
+     *
+     * @param doctorId the doctor id
+     * @return the all patient id mapped under a doctor
+     * @throws SQLException the sql exception
+     */
+    List<Patient> getAllPatientIDMappedUnderADoctor(int doctorId) throws SQLException;
+
 
 }

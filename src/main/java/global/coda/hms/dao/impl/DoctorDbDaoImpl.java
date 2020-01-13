@@ -5,8 +5,8 @@ import global.coda.hms.config.MysqlConnection;
 import global.coda.hms.constant.applicationconstant.daoconstants.DoctorDaoConstants;
 import global.coda.hms.constant.dbconstant.MysqlQueries;
 import global.coda.hms.dao.DoctorDbDao;
-import global.coda.hms.exceptionmapper.SystemExceptionMapper;
 import global.coda.hms.model.Doctor;
+import global.coda.hms.model.Patient;
 import org.apache.log4j.Logger;
 
 import java.sql.Connection;
@@ -15,8 +15,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 
@@ -24,17 +26,26 @@ import java.util.ResourceBundle;
  * The type Doctor db dao.
  */
 public class DoctorDbDaoImpl implements DoctorDbDao {
-    Logger LOGGER = Logger.getLogger(DoctorDbDaoImpl.class);
+    /**
+     * The Logger.
+     */
+    private Logger LOGGER = Logger.getLogger(DoctorDbDaoImpl.class);
 
     private static final ResourceBundle LOCAL_MESSAGES_BUNDLE = ResourceBundle.getBundle("messages",
             Locale.getDefault());
+
+    /**
+     * @param doctor the doctor
+     * @return
+     * @throws SQLException
+     */
     @Override
     public Boolean create(Doctor doctor) throws SQLException {
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorDaoConstants.ENTERED_DOCTOR_CREATE) +" "+ doctor);
+        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorDaoConstants.ENTERED_DOCTOR_CREATE) + " " + doctor);
         MysqlConnection connection = new MysqlConnection();
         Connection sqlConnection = connection.getConnection();
-        String queryDoctor=LOCAL_MESSAGES_BUNDLE.getString(MysqlQueries.CREATE_DOCTOR_T_DOCTOR);
-        String queryUser=LOCAL_MESSAGES_BUNDLE.getString(MysqlQueries.CREATE_DOCTOR_T_USER);
+        String queryDoctor = LOCAL_MESSAGES_BUNDLE.getString(MysqlQueries.CREATE_DOCTOR_T_DOCTOR);
+        String queryUser = LOCAL_MESSAGES_BUNDLE.getString(MysqlQueries.CREATE_DOCTOR_T_USER);
         //t_user table contents
         String username = doctor.getUsername();
         String email = doctor.getEmail();
@@ -74,15 +85,20 @@ public class DoctorDbDaoImpl implements DoctorDbDao {
 
     }
 
+    /**
+     * @param userId the id
+     * @return
+     * @throws SQLException
+     */
     @Override
     public Doctor read(int userId) throws SQLException {
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorDaoConstants.ENTERED_DOCTOR_READ)+" "+userId);
+        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorDaoConstants.ENTERED_DOCTOR_READ) + " " + userId);
         MysqlConnection connection = new MysqlConnection();
 
         Connection sqlConnection = connection.getConnection();
-        Doctor doctor= new Doctor();
+        Doctor doctor = new Doctor();
 
-        String readDoctorQuery=LOCAL_MESSAGES_BUNDLE.getString(MysqlQueries.READ_DOCTOR_T_USER__JOIN_T_DOCTOR);
+        String readDoctorQuery = LOCAL_MESSAGES_BUNDLE.getString(MysqlQueries.READ_DOCTOR_T_USER__JOIN_T_DOCTOR);
         PreparedStatement statement = sqlConnection.prepareStatement(readDoctorQuery);
         statement.setInt(1, userId);
         statement.setInt(2, 1);
@@ -90,10 +106,9 @@ public class DoctorDbDaoImpl implements DoctorDbDao {
 
 
         ResultSet resultSet = statement.executeQuery();
-        if(!resultSet.isBeforeFirst()){
+        if (!resultSet.isBeforeFirst()) {
             throw new SQLException("UserId Not Found In Db");
-        }
-        else {
+        } else {
             while (resultSet.next()) {
                 doctor.setUserId(resultSet.getInt(1));
                 doctor.setUsername(resultSet.getString(2));
@@ -104,11 +119,17 @@ public class DoctorDbDaoImpl implements DoctorDbDao {
             }
         }
         connection.closeConnection();
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorDaoConstants.DOCTOR_READ_IN_DB)+" " +doctor);
+        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorDaoConstants.DOCTOR_READ_IN_DB) + " " + doctor);
         return doctor;
 
     }
 
+    /**
+     * ReadALL.
+     *
+     * @return
+     * @throws SQLException
+     */
     @Override
     public List<Doctor> readAll() throws SQLException {
 
@@ -138,6 +159,12 @@ public class DoctorDbDaoImpl implements DoctorDbDao {
         return doctorList;
     }
 
+    /**
+     * Readd.
+     *
+     * @return
+     * @throws SQLException
+     */
     @Override
     public List<Doctor> readAllWithMaskedDetails() throws SQLException {
 
@@ -164,10 +191,16 @@ public class DoctorDbDaoImpl implements DoctorDbDao {
         return doctorList;
     }
 
-
+    /**
+     * Update.
+     *
+     * @param doctor the doctor
+     * @return
+     * @throws SQLException
+     */
     @Override
     public Boolean update(Doctor doctor) throws SQLException {
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorDaoConstants.ENTERED_DOCTOR_UPDATE)+" "+ doctor);
+        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorDaoConstants.ENTERED_DOCTOR_UPDATE) + " " + doctor);
         MysqlConnection connection = new MysqlConnection();
 
         Connection sqlConnection = connection.getConnection();
@@ -178,8 +211,8 @@ public class DoctorDbDaoImpl implements DoctorDbDao {
         int userId = doctor.getUserId();
         //t_doctor Contents
         String specialization = doctor.getSpecialist();
-        String userQuery=LOCAL_MESSAGES_BUNDLE.getString(MysqlQueries.UPDATE_DOCTOR_T_USER);
-        String doctorQuery=LOCAL_MESSAGES_BUNDLE.getString(MysqlQueries.UPDATE_DOCTOR_T_DOCTOR);
+        String userQuery = LOCAL_MESSAGES_BUNDLE.getString(MysqlQueries.UPDATE_DOCTOR_T_USER);
+        String doctorQuery = LOCAL_MESSAGES_BUNDLE.getString(MysqlQueries.UPDATE_DOCTOR_T_DOCTOR);
 
 
         PreparedStatement statement = sqlConnection.prepareStatement(userQuery);
@@ -203,15 +236,22 @@ public class DoctorDbDaoImpl implements DoctorDbDao {
         return true;
     }
 
+    /**
+     * Delete.
+     *
+     * @param userId
+     * @return
+     * @throws SQLException
+     */
     @Override
     public Boolean delete(int userId) throws SQLException {
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorDaoConstants.ENTERED_DOCTOR_DELETE)+" "+ userId);
+        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorDaoConstants.ENTERED_DOCTOR_DELETE) + " " + userId);
 
         MysqlConnection connection = new MysqlConnection();
 
         Connection sqlConnection = connection.getConnection();
-        String userQuery=LOCAL_MESSAGES_BUNDLE.getString(MysqlQueries.DELETE_DOCTOR_T_USER);
-        String doctorQuery=LOCAL_MESSAGES_BUNDLE.getString(MysqlQueries.DELETE_DOCTOR_T_DOCTOR);
+        String userQuery = LOCAL_MESSAGES_BUNDLE.getString(MysqlQueries.DELETE_DOCTOR_T_USER);
+        String doctorQuery = LOCAL_MESSAGES_BUNDLE.getString(MysqlQueries.DELETE_DOCTOR_T_DOCTOR);
 
         PreparedStatement statement = sqlConnection.prepareStatement(userQuery);
         statement.setInt(1, 0);
@@ -231,4 +271,73 @@ public class DoctorDbDaoImpl implements DoctorDbDao {
 
     }
 
+    @Override
+    public List<Integer> readAllDoctorId() throws SQLException {
+        List<Integer> doctorIdList = new ArrayList<>();
+        MysqlConnection connection = new MysqlConnection();
+
+        Connection sqlConnection = connection.getConnection();
+
+        PreparedStatement statement = sqlConnection.prepareStatement("select pk_user_id from t_user where fk_role_id=? and is_active=?");
+        statement.setInt(1, 2);
+        statement.setInt(2, 1);
+
+        ResultSet resultSet = statement.executeQuery();
+        while (resultSet.next()) {
+            doctorIdList.add(resultSet.getInt(1));
+        }
+        connection.closeConnection();
+
+
+        return doctorIdList;
+    }
+
+    public Map<Integer, Doctor> readAllDoctorsPatients() throws SQLException {
+        Map<Integer, Doctor> doctorMap = new HashMap<Integer, Doctor>();
+        MysqlConnection connection = new MysqlConnection();
+
+        Connection sqlConnection = connection.getConnection();
+
+        PreparedStatement statement = sqlConnection.prepareStatement("select t_patient_has_doctor.fk_doctor_id, pk_user_id,username,email,password,fk_role_id,age,area,city,state from t_user join t_patient on t_user.pk_user_id = t_patient.fk_user_id join t_patient_has_doctor on t_patient_has_doctor.fk_patient_id = t_user.pk_user_id  where t_user.is_active =? and t_patient.is_active=? and t_patient_has_doctor.is_active=?");
+        statement.setInt(1, 1);
+        statement.setInt(2, 1);
+        statement.setInt(3, 1);
+
+
+        ResultSet resultSet = statement.executeQuery();
+        while (resultSet.next()) {
+            List<Patient> patientList;
+            Doctor doctor = new Doctor();
+            Patient patient = new Patient();
+
+            doctor.setUserId(resultSet.getInt(1));
+            patient.setUserId(resultSet.getInt(2));
+            patient.setUsername(resultSet.getString(3));
+            patient.setEmail(resultSet.getString(4));
+            patient.setPassword(resultSet.getString(5));
+            patient.setRoleId(resultSet.getInt(6));
+            patient.setAge(resultSet.getInt(7));
+            patient.setArea(resultSet.getString(8));
+            patient.setCity(resultSet.getString(8));
+            patient.setState(resultSet.getString(10));
+            if (!doctorMap.containsKey(doctor.getUserId())) {
+                patientList = new ArrayList<>();
+                patientList.add(patient);
+                doctor.setPatientList(patientList);
+                doctorMap.put(doctor.getUserId(), doctor);
+
+            } else {
+                doctor = doctorMap.get(doctor.getUserId());
+                patientList = doctor.getPatientList();
+                patientList.add(patient);
+                // doctor.setPatientList(patientList);
+                // doctorMap.put(doctor.getUserId(),doctor);
+            }
+            System.out.println(doctorMap);
+        }
+        connection.closeConnection();
+
+
+        return doctorMap;
+    }
 }

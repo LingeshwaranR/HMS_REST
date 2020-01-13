@@ -1,9 +1,7 @@
 package global.coda.hms.dao.impl;
 
 
-
 import global.coda.hms.config.MysqlConnection;
-import global.coda.hms.constant.applicationconstant.daoconstants.DoctorDaoConstants;
 import global.coda.hms.constant.applicationconstant.daoconstants.PatientDaoConstants;
 import global.coda.hms.constant.dbconstant.MysqlQueries;
 import global.coda.hms.dao.PatientDbDao;
@@ -25,7 +23,7 @@ import java.util.ResourceBundle;
  */
 public class PatientDbDaoImpl implements PatientDbDao {
 
-    Logger LOGGER = Logger.getLogger(PatientDbDaoImpl.class);
+    private Logger LOGGER = Logger.getLogger(PatientDbDaoImpl.class);
 
     private static final ResourceBundle LOCAL_MESSAGES_BUNDLE = ResourceBundle.getBundle("messages",
             Locale.getDefault());
@@ -36,10 +34,14 @@ public class PatientDbDaoImpl implements PatientDbDao {
      */
 
 
-
+    /**
+     * @param patient the patient
+     * @return
+     * @throws SQLException
+     */
     @Override
     public Boolean create(Patient patient) throws SQLException {
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(PatientDaoConstants.ENTERED_PATIENT_CREATE) +" "+ patient);
+        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(PatientDaoConstants.ENTERED_PATIENT_CREATE) + " " + patient);
 
         MysqlConnection connection = new MysqlConnection();
         Connection sqlConnection = connection.getConnection();
@@ -52,8 +54,8 @@ public class PatientDbDaoImpl implements PatientDbDao {
         String area = patient.getArea();
         String city = patient.getCity();
         String state = patient.getState();
-        String userQuery= LOCAL_MESSAGES_BUNDLE.getString(MysqlQueries.CREATE_PATIENT_T_USER);
-        String patientQuery=LOCAL_MESSAGES_BUNDLE.getString(MysqlQueries.CREATE_PATIENT_T_PATIENT);
+        String userQuery = LOCAL_MESSAGES_BUNDLE.getString(MysqlQueries.CREATE_PATIENT_T_USER);
+        String patientQuery = LOCAL_MESSAGES_BUNDLE.getString(MysqlQueries.CREATE_PATIENT_T_PATIENT);
 
         PreparedStatement statement = sqlConnection.prepareStatement(userQuery, Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, username);
@@ -94,14 +96,19 @@ public class PatientDbDaoImpl implements PatientDbDao {
 
     }
 
+    /**
+     * @param userId
+     * @return
+     * @throws SQLException
+     */
     @Override
     public Patient read(int userId) throws SQLException {
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(PatientDaoConstants.ENTERED_PATIENT_READ) +" "+ userId);
+        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(PatientDaoConstants.ENTERED_PATIENT_READ) + " " + userId);
 
         MysqlConnection connection = new MysqlConnection();
 
         Connection sqlConnection = connection.getConnection();
-        Patient patient=new Patient();
+        Patient patient = new Patient();
         PreparedStatement statement = sqlConnection.prepareStatement("select pk_user_id,username,email,password,fk_role_id,age,area,city,state from t_user join t_patient on t_user.pk_user_id = t_patient.fk_user_id where  t_user.pk_user_id=? and   t_user.is_active =? and t_patient.is_active=?");
         statement.setInt(1, userId);
         statement.setInt(2, 1);
@@ -109,10 +116,9 @@ public class PatientDbDaoImpl implements PatientDbDao {
 
 
         ResultSet resultSet = statement.executeQuery();
-        if(!resultSet.isBeforeFirst()){
+        if (!resultSet.isBeforeFirst()) {
             throw new SQLException("UserId Not Found In Db");
-        }
-        else {
+        } else {
             while (resultSet.next()) {
                 patient.setUserId(resultSet.getInt(1));
                 patient.setUsername(resultSet.getString(2));
@@ -126,12 +132,16 @@ public class PatientDbDaoImpl implements PatientDbDao {
             }
         }
         connection.closeConnection();
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(PatientDaoConstants.PATIENT_READ_IN_DB) +" "+ patient);
+        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(PatientDaoConstants.PATIENT_READ_IN_DB) + " " + patient);
 
         return patient;
 
     }
 
+    /**
+     * @return
+     * @throws SQLException
+     */
     @Override
     public List<Patient> readAll() throws SQLException {
         MysqlConnection connection = new MysqlConnection();
@@ -162,6 +172,10 @@ public class PatientDbDaoImpl implements PatientDbDao {
         return patientList;
     }
 
+    /**
+     * @return
+     * @throws SQLException
+     */
     @Override
     public List<Patient> readAllWithMaskedDetails() throws SQLException {
         MysqlConnection connection = new MysqlConnection();
@@ -187,9 +201,14 @@ public class PatientDbDaoImpl implements PatientDbDao {
         return patientList;
     }
 
+    /**
+     * @param patient the patient
+     * @return
+     * @throws SQLException
+     */
     @Override
     public Boolean update(Patient patient) throws SQLException {
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(PatientDaoConstants.ENTERED_PATIENT_UPDATE) +" "+ patient);
+        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(PatientDaoConstants.ENTERED_PATIENT_UPDATE) + " " + patient);
 
         MysqlConnection connection = new MysqlConnection();
 
@@ -229,9 +248,14 @@ public class PatientDbDaoImpl implements PatientDbDao {
         return true;
     }
 
+    /**
+     * @param userId
+     * @return
+     * @throws SQLException
+     */
     @Override
     public Boolean delete(int userId) throws SQLException {
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(PatientDaoConstants.ENTERED_PATIENT_DELETE) +" "+ userId);
+        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(PatientDaoConstants.ENTERED_PATIENT_DELETE) + " " + userId);
 
         MysqlConnection connection = new MysqlConnection();
 
@@ -250,10 +274,43 @@ public class PatientDbDaoImpl implements PatientDbDao {
 
 
         connection.closeConnection();
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(PatientDaoConstants.PATIENT_DELETE_IN_DB) );
+        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(PatientDaoConstants.PATIENT_DELETE_IN_DB));
 
         return true;
 
+    }
+
+    /**
+     * @param doctorId
+     * @return
+     * @throws SQLException
+     */
+    @Override
+    public List<Patient> getAllPatientIDMappedUnderADoctor(int doctorId) throws SQLException {
+        MysqlConnection connection = new MysqlConnection();
+
+        Connection sqlConnection = connection.getConnection();
+        List<Patient> patientList = new ArrayList<>();
+        PreparedStatement statement = sqlConnection.prepareStatement("select pk_user_id,username,email,age,area,city,state from t_user join t_patient on t_user.pk_user_id = t_patient.fk_user_id join t_patient_has_doctor on t_patient_has_doctor.fk_patient_id = t_user.pk_user_id  where t_user.is_active =? and t_patient.is_active=? and t_patient_has_doctor.is_active=? and t_patient_has_doctor.fk_doctor_id=?");
+        statement.setInt(1, 1);
+        statement.setInt(2, 1);
+        statement.setInt(3, 1);
+        statement.setInt(4, doctorId);
+
+
+        ResultSet resultSet = statement.executeQuery();
+        while (resultSet.next()) {
+            Patient patient = new Patient();
+            patient.setUserId(resultSet.getInt(1));
+            patient.setUsername(resultSet.getString(2));
+            patient.setEmail(resultSet.getString(3));
+            patient.setAge(resultSet.getInt(4));
+            patient.setArea(resultSet.getString(5));
+            patient.setCity(resultSet.getString(6));
+            patient.setState(resultSet.getString(7));
+            patientList.add(patient);
+        }
+        return patientList;
     }
 
 

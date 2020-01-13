@@ -6,16 +6,14 @@ package global.coda.hms.model;
 public class Patient extends User {
 
 
-
-
 	/**
 	 * Gets age.
 	 *
 	 * @return the age
 	 */
 	public int getAge() {
-		return age;
-	}
+        return age;
+    }
 
 	/**
 	 * Sets age.
@@ -23,10 +21,8 @@ public class Patient extends User {
 	 * @param age the age
 	 */
 	public void setAge(int age) {
-		this.age = age;
-	}
-
-
+        this.age = age;
+    }
 
 
 	/**
@@ -35,8 +31,8 @@ public class Patient extends User {
 	 * @return the area
 	 */
 	public String getArea() {
-		return area;
-	}
+        return area;
+    }
 
 	/**
 	 * Sets area.
@@ -44,8 +40,8 @@ public class Patient extends User {
 	 * @param area the area
 	 */
 	public void setArea(String area) {
-		this.area = area;
-	}
+        this.area = area;
+    }
 
 	/**
 	 * Gets state.
@@ -53,8 +49,8 @@ public class Patient extends User {
 	 * @return the state
 	 */
 	public String getState() {
-		return state;
-	}
+        return state;
+    }
 
 	/**
 	 * Sets state.
@@ -62,8 +58,8 @@ public class Patient extends User {
 	 * @param state the state
 	 */
 	public void setState(String state) {
-		this.state = state;
-	}
+        this.state = state;
+    }
 
 	/**
 	 * Gets city.
@@ -71,8 +67,8 @@ public class Patient extends User {
 	 * @return the city
 	 */
 	public String getCity() {
-		return city;
-	}
+        return city;
+    }
 
 	/**
 	 * Sets city.
@@ -80,24 +76,22 @@ public class Patient extends User {
 	 * @param city the city
 	 */
 	public void setCity(String city) {
-		this.city = city;
-	}
+        this.city = city;
+    }
 
-
+	/**
+	 *
+	 * @return
+	 */
     @Override
     public String toString() {
-        return  age + "," + area + "," + city + "," + state;
+        return age + "," + area + "," + city + "," + state;
 
     }
 
 
-
-
-
-
-
-	private int age;
-	private String area;
-	private String state;
-	private String city;
+    private int age;
+    private String area;
+    private String state;
+    private String city;
 }

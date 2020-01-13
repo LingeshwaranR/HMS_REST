@@ -2,7 +2,6 @@ package global.coda.hms.exceptionmapper;
 
 
 import global.coda.hms.exception.BuisnessException;
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
 import javax.ws.rs.core.MediaType;
@@ -15,9 +14,15 @@ import javax.ws.rs.ext.Provider;
  */
 @Provider
 public class BuisnessExceptionMapper implements ExceptionMapper<BuisnessException> {
-    Logger LOGGER = Logger.getLogger(BuisnessExceptionMapper.class);
+    /**
+     * The Logger.
+     */
+    private Logger LOGGER = Logger.getLogger(BuisnessExceptionMapper.class);
 
-
+    /**
+     * @param exception
+     * @return
+     */
     @Override
     public Response toResponse(BuisnessException exception) {
         LOGGER.error(exception);
