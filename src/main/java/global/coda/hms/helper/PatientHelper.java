@@ -2,12 +2,14 @@ package global.coda.hms.helper;
 
 import global.coda.hms.constant.applicationconstant.helperconstants.DoctorHelperConstants;
 import global.coda.hms.constant.applicationconstant.helperconstants.PatientHelperConstants;
-import global.coda.hms.dao.impl.DoctorDbDaoImpl;
+import global.coda.hms.dao.impl.DoctorDbDao;
 import global.coda.hms.dao.impl.PatientDbDaoImpl;
 import global.coda.hms.exception.BuisnessException;
 import global.coda.hms.exception.SystemException;
 import global.coda.hms.model.Patient;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -23,7 +25,7 @@ public class PatientHelper {
     /**
      * The Logger.
      */
-    private Logger LOGGER = Logger.getLogger(PatientHelper.class);
+    private Logger LOGGER = LogManager.getLogger(PatientHelper.class);
 
     private static final ResourceBundle LOCAL_MESSAGES_BUNDLE = ResourceBundle.getBundle("messages",
             Locale.getDefault());
@@ -127,16 +129,18 @@ public class PatientHelper {
      * @return the all patient under doctor helper
      * @throws BuisnessException the buisness exception
      */
-    public List<Patient> getAllPatientUnderDoctorHelper(int doctorId) throws BuisnessException {
+    public List<Patient> getAllPatientUnderDoctorHelper(int doctorId) throws BuisnessException, SystemException {
         LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(PatientHelperConstants.ENTERED_PATIENTHELPER_DELETE) + " doctorId : " + doctorId);
         List<Patient> patientList = new ArrayList<>();
 
         try {
-            DoctorDbDaoImpl doctorDbDaoImpl = new DoctorDbDaoImpl();
-            doctorDbDaoImpl.read(doctorId);
+            DoctorDbDao doctorDbDao = new DoctorDbDao();
+            doctorDbDao.read(doctorId);
             patientList = patientDbDaoImpl.getAllPatientIDMappedUnderADoctor(doctorId);
         } catch (SQLException e) {
             throw new BuisnessException(e);
+        } catch (Exception e) {
+            throw new SystemException(e);
         }
         LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(PatientHelperConstants.PATIENT_DELETE_IN_PATIENTHELPER));
         return patientList;

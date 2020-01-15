@@ -8,7 +8,8 @@ import global.coda.hms.helper.DoctorHelper;
 import global.coda.hms.helper.PatientHelper;
 import global.coda.hms.model.Doctor;
 import global.coda.hms.model.Patient;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,11 +25,10 @@ public class DoctorDelegate {
     /**
      * The Logger.
      */
-    private Logger LOGGER = Logger.getLogger(DoctorDelegate.class);
+    private static Logger LOGGER = LogManager.getLogger(DoctorDelegate.class);
 
     private static final ResourceBundle LOCAL_MESSAGES_BUNDLE = ResourceBundle.getBundle("messages",
             Locale.getDefault());
-    private DoctorHelper doctorHelper = new DoctorHelper();
 
     /**
      * Create doctor delegate.
@@ -40,20 +40,18 @@ public class DoctorDelegate {
      * @throws SystemException   the system exception
      * @throws BuisnessException the buisness exception
      */
-    public void createDoctorDelegate(String email, String password, String username, String specialist) throws SystemException, BuisnessException {
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorDelegateConstants.ENTERED_DOCTORDELEGATE_CREATE) + " "
-                +
-                email + " " + password + " " + username + " " + specialist);
+    public static void createDoctorDelegate(String email, String password, String username, String specialist) throws SystemException, BuisnessException {
+        LOGGER.traceEntry(email + " " + password + " " + username + " " + specialist);
         Doctor doctor = new Doctor();
         doctor.setUsername(username);
         doctor.setEmail(email);
         doctor.setPassword(password);
         doctor.setSpecialist(specialist);
         Boolean success = false;
-        if (doctorHelper.createDoctorHelper(doctor)) {
+        if (DoctorHelper.createDoctorHelper(doctor)) {
             success = true;
         }
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorDelegateConstants.DOCTOR_CREATED_IN_DOCTARDELEGATE));
+        LOGGER.traceExit();
     }
 
     /**
@@ -63,12 +61,12 @@ public class DoctorDelegate {
      * @return the doctor
      * @throws BuisnessException the buisness exception
      */
-    public Doctor readDoctorDelegate(int userId) throws BuisnessException {
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorDelegateConstants.ENTERED_DOCTORDELEGATE_READ) + " userId : " + userId);
+    public static Doctor readDoctorDelegate(int userId) throws BuisnessException, SystemException {
+        LOGGER.traceEntry(String.valueOf(userId));
 
-        Doctor doctor = new Doctor();
-        doctor = doctorHelper.readDoctorHelper(userId);
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorDelegateConstants.DOCTOR_READ_IN_DOCTARDELEGATE) + "\n" + doctor);
+        Doctor doctor;
+        doctor = DoctorHelper.readDoctorHelper(userId);
+        LOGGER.traceExit( doctor);
         return doctor;
     }
 
@@ -83,10 +81,8 @@ public class DoctorDelegate {
      * @throws SystemException   the system exception
      * @throws BuisnessException the buisness exception
      */
-    public void updateDoctorDelegate(int userId, String email, String password, String username, String specialist) throws SystemException, BuisnessException {
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorDelegateConstants.ENTERED_DOCTORDELEGATE_UPDATE) + " " + userId
-                +
-                email + " " + password + " " + username + " " + specialist);
+    public static void updateDoctorDelegate(int userId, String email, String password, String username, String specialist) throws SystemException, BuisnessException {
+        LOGGER.entry(userId + email + " " + password + " " + username + " " + specialist);
         Doctor doctor = new Doctor();
         doctor.setUserId(userId);
         doctor.setUsername(username);
@@ -94,25 +90,23 @@ public class DoctorDelegate {
         doctor.setPassword(password);
         doctor.setSpecialist(specialist);
         Boolean success = false;
-        if (doctorHelper.updateDoctorHelper(doctor)) {
+        if (DoctorHelper.updateDoctorHelper(doctor)) {
             success = true;
         }
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorDelegateConstants.DOCTOR_UPDATE_IN_DOCTARDELEGATE));
+        LOGGER.traceExit();
     }
 
     /**
      * Delete doctor delegate boolean.
      *
      * @param userId the user id
-     * @return the boolean
      * @throws BuisnessException the buisness exception
      */
-    public Boolean deleteDoctorDelegate(int userId) throws BuisnessException {
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorDelegateConstants.ENTERED_DOCTORDELEGATE_DELETE) + " userId : " + userId);
+    public static void deleteDoctorDelegate(int userId) throws BuisnessException, SystemException {
+        LOGGER.traceEntry(String.valueOf(userId));
 
-        doctorHelper.deleteDoctorHelper(userId);
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorDelegateConstants.DOCTOR_DELETE_IN_DOCTARDELEGATE));
-        return true;
+        DoctorHelper.deleteDoctorHelper(userId);
+        LOGGER.traceExit();
     }
 
     /**
@@ -122,21 +116,22 @@ public class DoctorDelegate {
      * @return the all patient under doctor delegate
      * @throws BuisnessException the buisness exception
      */
-    public List<Patient> getAllPatientUnderDoctorDelegate(int doctorId) throws BuisnessException {
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(PatientDelegateConstants.ENTERED_PATIENTDELEGATE_DELETE) + " userId : " + doctorId);
+    public static List<Patient> getAllPatientUnderDoctorDelegate(int doctorId) throws BuisnessException, SystemException {
+        LOGGER.entry( " userId : " + doctorId);
         List<Patient> patientList = new ArrayList<>();
+        //FIX : USE STATIC INSTEAD OF OBJECTS
         PatientHelper patientHelper = new PatientHelper();
         patientList = patientHelper.getAllPatientUnderDoctorHelper(doctorId);
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(PatientDelegateConstants.PATIENT_DELETE_IN_PATIENTDELEGATE));
+        LOGGER.traceExit(patientList);
 
         return patientList;
     }
 
-    public List<Doctor> readAllDoctorsPatientsDelegate() throws BuisnessException, SystemException {
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(PatientDelegateConstants.ENTERED_PATIENTDELEGATE_DELETE));
+    public static List<Doctor> readAllDoctorsPatientsDelegate() throws BuisnessException, SystemException {
+        LOGGER.traceEntry();
 
         Map< Integer,Doctor> doctorMap = new HashMap<Integer,Doctor>();
-        doctorMap=doctorHelper.readAllDoctorsPatientsHelper();
+        doctorMap=DoctorHelper.readAllDoctorsPatientsHelper();
         List<Doctor> doctorList=new ArrayList<>();
         for (Map.Entry<Integer,Doctor> doctor : doctorMap.entrySet()){
 
@@ -144,7 +139,7 @@ public class DoctorDelegate {
 
         }
 
-            LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(PatientDelegateConstants.PATIENT_DELETE_IN_PATIENTDELEGATE));
+            LOGGER.traceExit(doctorList);
 
         return doctorList;
     }

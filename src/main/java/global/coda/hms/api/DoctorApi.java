@@ -7,8 +7,8 @@ import global.coda.hms.exception.SystemException;
 import global.coda.hms.model.CustomResponse;
 import global.coda.hms.model.Doctor;
 import global.coda.hms.model.Patient;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -35,19 +35,15 @@ public class DoctorApi {
     /**
      * The Logger.
      */
-    private Logger LOGGER = Logger.getLogger(DoctorApi.class);
+    private Logger LOGGER = LogManager.getLogger(DoctorApi.class);
 
     private static final ResourceBundle LOCAL_MESSAGES_BUNDLE = ResourceBundle.getBundle("messages",
             Locale.getDefault());
 
-    private DoctorDelegate doctorDelegate = new DoctorDelegate();
 
     /**
      * Instantiates a new Doctor api.
      */
-    public DoctorApi() {
-        BasicConfigurator.configure();
-    }
 
     /**
      * Create patient response.
@@ -73,32 +69,16 @@ public class DoctorApi {
 
         //Create Service
 //        JSONObject jsonObject = new JSONObject();
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorApiContants.ENTERED_DOCTORAPI_CREATE)
-                +
-                " "
-                +
-                email
-                +
-                " "
-                +
-                password
-                +
-                " "
-                +
-                username
-                +
-                " "
-                +
-                specialist);
+        LOGGER.entry( email + " " + password + " " + username + " " + specialist);
         CustomResponse<String> customResponse = new CustomResponse<>();
         String message = LOCAL_MESSAGES_BUNDLE.getString(DoctorApiContants.SUCCESSFULLY_CREATED);
 
 
-        doctorDelegate.createDoctorDelegate(email, password, username, specialist);
+        DoctorDelegate.createDoctorDelegate(email, password, username, specialist);
         customResponse.setSuccess(true);
         customResponse.setStatus(Response.Status.CREATED.getStatusCode());
         customResponse.setObject(message);
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorApiContants.DOCTOR_CREATED_IN_DOCTARAPI));
+        LOGGER.traceExit(customResponse);
         return customResponse;
     }
 
@@ -113,17 +93,16 @@ public class DoctorApi {
     @Path("readdoctor")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public CustomResponse<Doctor> readPatient(@FormParam("userId") int userId) throws BuisnessException {
+    public CustomResponse<Doctor> readPatient(@FormParam("userId") int userId) throws BuisnessException, SystemException {
 
         //Read Service
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorApiContants.ENTERED_DOCTORAPI_READ) + " userId : " + userId);
+        LOGGER.entry( userId);
         CustomResponse<Doctor> customResponse = new CustomResponse<>();
-        Doctor doctor = new Doctor();
-        doctor = doctorDelegate.readDoctorDelegate(userId);
+        Doctor doctor = DoctorDelegate.readDoctorDelegate(userId);
         customResponse.setSuccess(true);
         customResponse.setStatus(Response.Status.CREATED.getStatusCode());
         customResponse.setObject(doctor);
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorApiContants.DOCTOR_READ_IN_DOCTARAPI));
+        LOGGER.traceExit(customResponse);
         return customResponse;
     }
 
@@ -149,18 +128,16 @@ public class DoctorApi {
                                                 @FormParam("username") String username,
                                                 @FormParam("specialist") String specialist
     ) throws SystemException, BuisnessException {
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorApiContants.ENTERED_DOCTORAPI_UPDATE) + " " + userId
-                +
-                email + " " + password + " " + username + " " + specialist);
+        LOGGER.entry(userId + email + " " + password + " " + username + " " + specialist);
         CustomResponse<String> customResponse = new CustomResponse<>();
         String message = LOCAL_MESSAGES_BUNDLE.getString(DoctorApiContants.SUCCESSFULLY_UPDATED);
 
 
-        doctorDelegate.updateDoctorDelegate(userId, email, password, username, specialist);
+        DoctorDelegate.updateDoctorDelegate(userId, email, password, username, specialist);
         customResponse.setSuccess(true);
         customResponse.setStatus(Response.Status.CREATED.getStatusCode());
         customResponse.setObject(message);
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorApiContants.DOCTOR_UPDATE_IN_DOCTARAPI));
+        LOGGER.traceExit(customResponse);
         return customResponse;
     }
 
@@ -176,35 +153,42 @@ public class DoctorApi {
     @Path("deletedoctor")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public CustomResponse<String> deletePatient(@FormParam("userId") int userId) throws BuisnessException {
+    public CustomResponse<String> deletePatient(@FormParam("userId") int userId) throws BuisnessException, SystemException {
 
         //Read Service
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorApiContants.ENTERED_DOCTORAPI_DELETE) + " userId : " + userId);
+        LOGGER.entry( userId);
         CustomResponse<String> customResponse = new CustomResponse<>();
         String message = LOCAL_MESSAGES_BUNDLE.getString(DoctorApiContants.SUCCESSFULLY_DELETED);
 
-        doctorDelegate.deleteDoctorDelegate(userId);
+        DoctorDelegate.deleteDoctorDelegate(userId);
         customResponse.setSuccess(true);
         customResponse.setStatus(Response.Status.CREATED.getStatusCode());
         customResponse.setObject(message);
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorApiContants.DOCTOR_DELETE_IN_DOCTARAPI));
+        LOGGER.traceExit(customResponse);
         return customResponse;
     }
+
+    //FIX : CHECKSTYLE
     @POST
     @Path("{id}/getAllPatient")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public CustomResponse<List<Patient>> getAllPatient(@PathParam("id") int dotorId) throws BuisnessException {
+    //FIX SPELLING MISTAKE
+    //FIX : USE SYSTEM EXCEPTION
+    public CustomResponse<List<Patient>> getAllPatient(@PathParam("id") int doctorId) throws BuisnessException, SystemException {
 
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorApiContants.ENTERED_DOCTORAPI_DELETE) + " userId : " + dotorId);
+        //FIX : USE LOG4J TRACE ENTRY
+        LOGGER.entry( doctorId);
         CustomResponse<List<Patient>> customResponse = new CustomResponse<>();
-        List<Patient> patientList = new ArrayList<>();
-
-        patientList = doctorDelegate.getAllPatientUnderDoctorDelegate(dotorId);
+        List<Patient> patientList;
+        //FIX : DO NOT DEFINE BEFORE USE
+        //FIX FUNCTION NAME
+        patientList = DoctorDelegate.getAllPatientUnderDoctorDelegate(doctorId);
         customResponse.setSuccess(true);
         customResponse.setStatus(Response.Status.CREATED.getStatusCode());
         customResponse.setObject(patientList);
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorApiContants.DOCTOR_DELETE_IN_DOCTARAPI));
+        //FIX : TRACE EXIT
+        LOGGER.traceExit(customResponse);
         return customResponse;
     }
     @POST
@@ -213,15 +197,15 @@ public class DoctorApi {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public CustomResponse<List<Doctor>> getAllDoctorsPatient() throws BuisnessException, SystemException {
 
-        List<Doctor> doctorList=new ArrayList<>();
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorApiContants.ENTERED_DOCTORAPI_DELETE));
+        List<Doctor> doctorList;
+        LOGGER.traceEntry();
 
         CustomResponse<List<Doctor>> customResponse = new CustomResponse<>();
-        doctorList=doctorDelegate.readAllDoctorsPatientsDelegate();
+        doctorList=DoctorDelegate.readAllDoctorsPatientsDelegate();
         customResponse.setSuccess(true);
         customResponse.setStatus(Response.Status.CREATED.getStatusCode());
         customResponse.setObject(doctorList);
-        LOGGER.info(LOCAL_MESSAGES_BUNDLE.getString(DoctorApiContants.DOCTOR_DELETE_IN_DOCTARAPI));
+        LOGGER.traceExit(customResponse);
         return customResponse;
     }
 

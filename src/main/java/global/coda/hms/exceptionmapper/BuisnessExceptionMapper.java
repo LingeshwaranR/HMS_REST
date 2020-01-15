@@ -2,7 +2,9 @@ package global.coda.hms.exceptionmapper;
 
 
 import global.coda.hms.exception.BuisnessException;
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -17,15 +19,17 @@ public class BuisnessExceptionMapper implements ExceptionMapper<BuisnessExceptio
     /**
      * The Logger.
      */
-    private Logger LOGGER = Logger.getLogger(BuisnessExceptionMapper.class);
+    private Logger LOGGER = LogManager.getLogger(BuisnessExceptionMapper.class);
 
+    //FIX CHECKSTYLE
     /**
      * @param exception
      * @return
      */
     @Override
     public Response toResponse(BuisnessException exception) {
-        LOGGER.error(exception);
-        return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("You Entered Wrong Credentials").build();
+
+
+        return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity(exception.getMessage()).build();
     }
 }

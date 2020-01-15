@@ -6,7 +6,9 @@ import global.coda.hms.constant.applicationconstant.daoconstants.PatientDaoConst
 import global.coda.hms.constant.dbconstant.MysqlQueries;
 import global.coda.hms.dao.PatientDbDao;
 import global.coda.hms.model.Patient;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,7 +25,7 @@ import java.util.ResourceBundle;
  */
 public class PatientDbDaoImpl implements PatientDbDao {
 
-    private Logger LOGGER = Logger.getLogger(PatientDbDaoImpl.class);
+    private Logger LOGGER = LogManager.getLogger(PatientDbDaoImpl.class);
 
     private static final ResourceBundle LOCAL_MESSAGES_BUNDLE = ResourceBundle.getBundle("messages",
             Locale.getDefault());

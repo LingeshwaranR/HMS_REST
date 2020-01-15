@@ -6,8 +6,9 @@ import global.coda.hms.exception.BuisnessException;
 import global.coda.hms.exception.SystemException;
 import global.coda.hms.model.CustomResponse;
 import global.coda.hms.model.Patient;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -28,7 +29,7 @@ public class PatientApi {
     /**
      * The Logger.
      */
-   private Logger LOGGER = Logger.getLogger(PatientApi.class);
+   private Logger LOGGER = LogManager.getLogger(PatientApi.class);
 
     private static final ResourceBundle LOCAL_MESSAGES_BUNDLE = ResourceBundle.getBundle("messages",
             Locale.getDefault());
@@ -38,9 +39,6 @@ public class PatientApi {
     /**
      * Instantiates a new Patient api.
      */
-    public PatientApi() {
-        BasicConfigurator.configure();
-    }
 
     /**
      * Create patient custom response.

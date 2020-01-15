@@ -5,7 +5,8 @@ import global.coda.hms.exception.BuisnessException;
 import global.coda.hms.exception.SystemException;
 import global.coda.hms.helper.PatientHelper;
 import global.coda.hms.model.Patient;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 import java.util.Locale;
@@ -18,7 +19,7 @@ public class PatientDelegate {
     /**
      * The Logger.
      */
-    private Logger LOGGER = Logger.getLogger(PatientDelegate.class);
+    private Logger LOGGER = LogManager.getLogger(PatientDelegate.class);
 
     private static final ResourceBundle LOCAL_MESSAGES_BUNDLE = ResourceBundle.getBundle("messages",
             Locale.getDefault());
